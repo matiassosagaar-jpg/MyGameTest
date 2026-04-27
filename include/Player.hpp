@@ -3,7 +3,8 @@
 #include <raylib.h>
 class Player {
 private:    
-    int hp = 100;
+    int maxHp = 100;
+    int currentHp = maxHp;
     Rectangle hitBox;
     Vector2 direction {0,0};
     float speed = 200; //100 pixels per second
@@ -13,11 +14,17 @@ public:
     void Update(int ScreenWidth, int ScreenHeigth);
     void CheckCollisionWithBorders(int ScreenWidth, int ScreenHeigth);
     Vector2 GetPosition() const;
+    Rectangle GetHitBox() const;
+    void TakeDamage(int damage);
+    int GetMaxHp() const;
+    int GetCurrentHp() const;
 private:
     void Move();
     void ApplyMovement();
     
 };
+
+
 
 //cpp
 

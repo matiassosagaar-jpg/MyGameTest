@@ -1,6 +1,6 @@
 #include "Player.hpp"
 #include <raymath.h>
-Player::Player() : hitBox {0,  0, 40, 100} {
+Player::Player() : hitBox {0,  0, 70, 70} {
 };
 
 void Player::DrawHitBox() {
@@ -48,4 +48,22 @@ void Player::CheckCollisionWithBorders(int ScreenWidth, int ScreenHeigth) {
 
 Vector2 Player::GetPosition() const {
     return {hitBox.x + hitBox.width/2, hitBox.y + hitBox.height/2};
+}
+
+Rectangle Player::GetHitBox() const {
+    return hitBox;
+}
+
+void Player::TakeDamage(int damage) {
+    if (damage > currentHp)
+        currentHp = 0;
+    else
+        currentHp -= damage;
+}
+
+int Player::GetCurrentHp() const{
+    return currentHp;
+}
+int Player::GetMaxHp() const{
+    return maxHp;
 }

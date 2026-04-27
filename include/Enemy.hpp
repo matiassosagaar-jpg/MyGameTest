@@ -6,15 +6,32 @@ private:
     int hp = 100;
     Rectangle hitBox;
     Vector2 direction {0,0};
+    int attackRange = 75;
+    Vector2 attackSize {75,75};
+    int damage = 20;
+    float attackCooldown = 0;
     float speed = 150; //100 pixels per second
 public:
     Enemy();
     void DrawHitBox();
-    void Update(const Vector2& playerPos, int ScreenWidth, int ScreenHeigth);
+    void Update(Player& player, int ScreenWidth, int ScreenHeigth);
     void CheckCollisionWithBorders(int ScreenWidth, int ScreenHeigth);
     Vector2 GetPosition() const;
+    Rectangle GetAttackHitBox(const Player& player) const;
+    float DistanceFromPlayer(const Player& player) const;
+    void Attack(Player& player);
 private:
-    void Move(const Vector2& playerPos);
+    void Move(const Player& player);
     void ApplyMovement();
-    
+    void DrawAttackHitBox(const Player& player);
+    // --- states ----
+    enum class State {Charging,
+                    Attack,
+                    Idle};
+    State state = State::Idle;
+    bool attackSucceeded = false;
+    float timer = 0;
+    static constexpr float chargeTime = 1;
+    static constexpr float AttackTime = 0.2;
+
 };
