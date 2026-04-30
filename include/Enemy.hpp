@@ -18,13 +18,13 @@ public:
     void Update(Player& player, int ScreenWidth, int ScreenHeigth);
     void CheckCollisionWithBorders(int ScreenWidth, int ScreenHeigth);
     Vector2 GetPosition() const;
-    Rectangle GetAttackHitBox(const Player& player) const;
+    Rectangle GetAttackHitBox() const;
     float DistanceFromPlayer(const Player& player) const;
     void Attack(Player& player);
 private:
     void Move(const Player& player);
     void ApplyMovement();
-    void DrawAttackHitBox(const Player& player);
+    void DrawAttackHitBox() const;
     // --- states ----
     enum class State {Charging,
                     Attack,

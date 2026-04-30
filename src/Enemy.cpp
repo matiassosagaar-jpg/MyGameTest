@@ -36,6 +36,7 @@ void Enemy::Update(Player& player, int ScreenWidth, int ScreenHeigth) {
         }
         break;
     case State::Idle:
+        direction = Vector2Normalize(player.GetPosition() - this->GetPosition());
         Move(player);   // Solo moverse en Idle, así enemy está estático mientras ataca
         ApplyMovement();
         if (DistanceFromPlayer(player) < attackRange) {
@@ -49,7 +50,7 @@ void Enemy::Update(Player& player, int ScreenWidth, int ScreenHeigth) {
     }
     
     
-    DrawAttackHitBox(player);
+    DrawAttackHitBox();
     CheckCollisionWithBorders(ScreenWidth, ScreenHeigth);
     timer += dt;
 
@@ -70,10 +71,9 @@ Vector2 Enemy::GetPosition() const {
     return {hitBox.x + hitBox.width/2, hitBox.y + hitBox.height/2};
 }
 
-Rectangle Enemy::GetAttackHitBox(const Player& player) const{
-    Vector2 attackDir = Vector2Normalize(player.GetPosition() - this->GetPosition());
+Rectangle Enemy::GetAttackHitBox() const {
     // el centro del ataque será la posición actual + la suma de las mitades de ambas hitbox en la dirección del ataque
-    Vector2 attackCenter = GetPosition() + attackDir*(hitBox.width/ 2.0f + attackSize.x / 2.0f);
+    Vector2 attackCenter = GetPosition() + direction*(hitBox.width/ 2.0f + attackSize.x / 2.0f);
     Rectangle attackRect {attackCenter.x - attackSize.x/ 2.0f, 
                     attackCenter.y - attackSize.y/ 2.0f,
                     attackSize.x,
@@ -85,17 +85,17 @@ float Enemy::DistanceFromPlayer(const Player& player) const{
     float distance = Vector2Length(player.GetPosition() - this -> GetPosition());
     return distance;
 }
-void Enemy::DrawAttackHitBox(const Player& player) {
+void Enemy::DrawAttackHitBox() const {
     switch (state)
     {
     case State::Idle:
-        DrawRectangleRec(GetAttackHitBox(player), GRAY);
+        DrawRectangleRec(GetAttackHitBox(), GRAY);
         break;
     case State::Charging:
-        DrawRectangleRec(GetAttackHitBox(player), GREEN);
+        DrawRectangleRec(GetAttackHitBox(), GREEN);
         break;
     case State::Attack:
-        DrawRectangleRec(GetAttackHitBox(player), RED);
+        DrawRectangleRec(GetAttackHitBox(), RED);
     default:
         break;
     }
@@ -103,7 +103,7 @@ void Enemy::DrawAttackHitBox(const Player& player) {
 }
 
 void Enemy::Attack(Player& player) {
-    if (CheckCollisionRecs(this -> GetAttackHitBox(player), player.GetHitBox())) {
+    if (CheckCollisionRecs(this -> GetAttackHitBox(), player.GetHitBox())) {
         player.TakeDamage(damage);
         attackSucceeded = true;
     }
