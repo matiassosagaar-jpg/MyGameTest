@@ -1,9 +1,7 @@
 #include "Enemy.hpp"
 #include <stdexcept>
 #include <raymath.h>
-Enemy::Enemy() : hitBox {800, 800, 50, 50} {};
-
-void Enemy::DrawHitBox() {
+void Enemy::DrawHitBox() const{
     DrawRectangle(hitBox.x, hitBox.y, hitBox.width, hitBox.height, BLACK);
 }
 

@@ -12,8 +12,9 @@ private:
     float attackCooldown = 0;
     float speed = 150; //100 pixels per second
 public:
-    Enemy();
-    void DrawHitBox();
+    Enemy() : hitBox {800, 800, 50, 50} {};
+    Enemy(Vector2 startPos) : hitBox{ startPos.x, startPos.y, 50, 50 } {};
+    void DrawHitBox() const;
     void Update(Player& player, int ScreenWidth, int ScreenHeigth);
     void CheckCollisionWithBorders(int ScreenWidth, int ScreenHeigth);
     Vector2 GetPosition() const;
@@ -31,7 +32,7 @@ private:
     State state = State::Idle;
     bool attackSucceeded = false;
     float timer = 0;
-    static constexpr float chargeTime = 1;
-    static constexpr float AttackTime = 0.2;
+    static constexpr float chargeTime = 0.8f;
+    static constexpr float AttackTime = 0.2f;
 
 };

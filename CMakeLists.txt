@@ -8,6 +8,7 @@ add_executable(${PROJECT_NAME}
     src/main.cpp
     src/Player.cpp
     src/Enemy.cpp
+    src/WaveSpawner.cpp
 )
 
 add_subdirectory(external/raylib)
