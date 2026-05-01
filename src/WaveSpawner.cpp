@@ -1,5 +1,4 @@
 #include "WaveSpawner.hpp"
-
 void WaveSpawner::Start() {
     wave++;
     enemiesToSpawn = wave;
@@ -40,3 +39,11 @@ void WaveSpawner::DrawEnemies() const{
         enemy.DrawHitBox();
     }
 }
+
+void WaveSpawner::HandlePlayerAttack(Rectangle playerAttackHitBox, int damage) {
+    for (Enemy& enemy : enemies) {
+        if (CheckCollisionRecs(playerAttackHitBox, enemy.GetHitBox()))
+            enemy.takeDamage(damage);
+    }
+}
+

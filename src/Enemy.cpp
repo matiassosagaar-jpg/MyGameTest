@@ -2,7 +2,10 @@
 #include <stdexcept>
 #include <raymath.h>
 void Enemy::DrawHitBox() const{
-    DrawRectangle(hitBox.x, hitBox.y, hitBox.width, hitBox.height, BLACK);
+    if (isDead) 
+        DrawRectangle(hitBox.x, hitBox.y, hitBox.width, hitBox.height, GRAY);
+    else
+        DrawRectangle(hitBox.x, hitBox.y, hitBox.width, hitBox.height, BLACK);
 }
 
 void Enemy::Move(const Player& player) {
@@ -18,41 +21,43 @@ void Enemy::ApplyMovement() {
 }
 
 void Enemy::Update(Player& player, int ScreenWidth, int ScreenHeigth) {
-    float dt = GetFrameTime();
-    switch (state) {
-    case State::Charging:
-        if (timer >= chargeTime) {
-            state = State::Attack;
-            timer = 0.0f;
+    if (!isDead) {
+        float dt = GetFrameTime();
+        switch (state) {
+        case State::Charging:
+            if (timer >= chargeTime) {
+                state = State::Attack;
+                timer = 0.0f;
+            }
+            break;
+        case State::Attack:
+            if (!attackSucceeded) 
+                Attack(player); // Aplico daño si aún no lo hice
+            if (timer >= AttackTime) {  //cambio de estado cuando termina el tiempo estipulado
+                state = State::Idle;
+                attackSucceeded = false;
+                timer = 0.0f;
+            }
+            break;
+        case State::Idle:
+            direction = Vector2Normalize(player.GetPosition() - this->GetPosition());
+            Move(player);   // Solo moverse en Idle, así enemy está estático mientras ataca
+            ApplyMovement();
+            if (DistanceFromPlayer(player) < attackRange) {
+                state = State::Charging;
+                timer = 0.0f;   // resetando el estado
+            }
+            break;
+        default:
+            throw std::invalid_argument("Unknown state");
+            break;
         }
-        break;
-    case State::Attack:
-        if (!attackSucceeded) 
-            Attack(player); // Aplico daño si aún no lo hice
-        if (timer >= AttackTime) {  //cambio de estado cuando termina el tiempo estipulado
-            state = State::Idle;
-            attackSucceeded = false;
-            timer = 0.0f;
-        }
-        break;
-    case State::Idle:
-        direction = Vector2Normalize(player.GetPosition() - this->GetPosition());
-        Move(player);   // Solo moverse en Idle, así enemy está estático mientras ataca
-        ApplyMovement();
-        if (DistanceFromPlayer(player) < attackRange) {
-            state = State::Charging;
-            timer = 0.0f;   // resetando el estado
-        }
-        break;
-    default:
-        throw std::invalid_argument("Unknown state");
-        break;
+        
+        
+        DrawAttackHitBox();
+        CheckCollisionWithBorders(ScreenWidth, ScreenHeigth);
+        timer += dt;
     }
-    
-    
-    DrawAttackHitBox();
-    CheckCollisionWithBorders(ScreenWidth, ScreenHeigth);
-    timer += dt;
 
 }
 
@@ -107,4 +112,13 @@ void Enemy::Attack(Player& player) {
         player.TakeDamage(damage);
         attackSucceeded = true;
     }
+}
+
+void Enemy::takeDamage(int damage) {
+    if (damage >= currentHp){
+        currentHp = 0;
+        isDead = true;
+    }
+    else
+        currentHp -= damage;
 }

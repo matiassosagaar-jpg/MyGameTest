@@ -16,4 +16,5 @@ public:
     void SpawnEnemy(int screenWidth, int screenHeight);
     void UpdateEnemies(Player& player, int screenWidth, int screenHeight);
     void DrawEnemies() const;
+    void HandlePlayerAttack(Rectangle playerAttackHitBox, int damage);
 };
