@@ -32,8 +32,8 @@ void Enemy::Update(Player& player, int ScreenWidth, int ScreenHeigth) {
             break;
         case State::Attack:
             if (!attackSucceeded) 
-                Attack(player); // Aplico daño si aún no lo hice
-            if (timer >= AttackTime) {  //cambio de estado cuando termina el tiempo estipulado
+                Attack(player); // Apply damage if I still haven't
+            if (timer >= AttackTime) {  // change state when the timer reaches the attack Time
                 state = State::Idle;
                 attackSucceeded = false;
                 timer = 0.0f;
@@ -41,11 +41,11 @@ void Enemy::Update(Player& player, int ScreenWidth, int ScreenHeigth) {
             break;
         case State::Idle:
             direction = Vector2Normalize(player.GetPosition() - this->GetPosition());
-            Move(player);   // Solo moverse en Idle, así enemy está estático mientras ataca
+            Move(player);   // Enemy will only move in Idle, leaving it static when Charging-Attacking
             ApplyMovement();
             if (DistanceFromPlayer(player) < attackRange) {
                 state = State::Charging;
-                timer = 0.0f;   // resetando el estado
+                timer = 0.0f;   // reseting state
             }
             break;
         default:
@@ -77,7 +77,7 @@ Vector2 Enemy::GetPosition() const {
 }
 
 Rectangle Enemy::GetAttackHitBox() const {
-    // el centro del ataque será la posición actual + la suma de las mitades de ambas hitbox en la dirección del ataque
+    // The attack center will be the actual position plus the addition of both halfs of both hitboxes in the direction of the attack
     Vector2 attackCenter = GetPosition() + direction*(hitBox.width/ 2.0f + attackSize.x / 2.0f);
     Rectangle attackRect {attackCenter.x - attackSize.x/ 2.0f, 
                     attackCenter.y - attackSize.y/ 2.0f,

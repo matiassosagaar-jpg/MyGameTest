@@ -22,6 +22,8 @@ public:
     void TakeDamage(int damage);
     int GetMaxHp() const;
     int GetCurrentHp() const;
+    bool IsDead() {return isDead;}
+    void Reset();
 private:
     void Move();
     void ApplyMovement();
@@ -34,7 +36,7 @@ private:
     };
     State state = State::Idle;
     float timeInRecovery = 0.0f;
-    const float recoveryTime = 0.5f;
+    float recoveryTime = 0.5f;
 private:
     //Attack Logic
     int damage = 40;

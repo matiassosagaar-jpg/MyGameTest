@@ -1,9 +1,9 @@
 #include "Player.hpp"
 #include <raymath.h>
+
 Player::Player(int screenWidth, int screenHeight)
     : hitBox{screenWidth/2.0f, screenHeight/2.0f, 70, 70} {
 }
-
 void Player::DrawHitBox() const {
     if (!isDead)
         DrawRectangle(hitBox.x, hitBox.y, hitBox.width, hitBox.height, BLACK);
@@ -21,16 +21,16 @@ void Player::Move() {
         inputDirection.x -= 1;
     if (IsKeyDown(KEY_D))
         inputDirection.x += 1;
-    if (Vector2Length(inputDirection) != 0) // si el vector es nulo (no se pasaron inputs), su norma será cero
-        direction = Vector2Normalize(inputDirection); // no intento normalizar un vector nulo
+    if (Vector2Length(inputDirection) != 0) // if the vector is null (no inputs) it's length will be zero
+        direction = Vector2Normalize(inputDirection); // We won't try to normalize a null vector
     else
         direction = {0,0};
     }
 
 void Player::ApplyMovement() {
-    float dt = GetFrameTime(); // tiempo transcurrido desde el último frame
-    hitBox.x += speed*direction.x*dt; // como esto se calculará cada frame, al multiplicar por dt, hago que la velocidad por segundo no cambie
-    hitBox.y+= speed*direction.y*dt; // si cambian los fps
+    float dt = GetFrameTime(); // time passed since last frame
+    hitBox.x += speed*direction.x*dt; // velocity per second won't change if FPS are different, because it's multiplied by dt
+    hitBox.y+= speed*direction.y*dt; // 
 }
 
 void Player::Update(int ScreenWidth, int ScreenHeigth) {
@@ -76,7 +76,7 @@ Rectangle Player::GetHitBox() const {
 }
 
 void Player::TakeDamage(int damage) {
-    if (damage > currentHp){
+    if (damage >= currentHp){
         currentHp = 0;
         isDead = true;
     } else
@@ -119,10 +119,17 @@ void Player::setAimDirectionMouse() {
 }
 
 bool Player::ConsumeAttack() {
-    // si ha atacado este frame devuelve true y setea la flag de ataque a false, de lo contrario, devuelve false
+    // if attacked this frames, sets the flag to true and returns true, else, it'll return true
     if (attackedThisFrame) {
         attackedThisFrame = false;
         return true;
     }
     return false;
+}
+
+void Player::Reset() {
+    currentHp = maxHp;
+    Vector2 direction {0,0};
+    Vector2 aimDirection {0,0};
+    bool isDead = false;
 }

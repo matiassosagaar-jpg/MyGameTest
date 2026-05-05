@@ -11,7 +11,7 @@ private:
     Vector2 attackSize {50,50};
     int damage = 20;
     float attackCooldown = 0;
-    float speed = 150; //100 pixels per second
+     float speed = 150; //100 pixels per second
     bool isDead = false;
 public:
     Enemy() : hitBox {800, 800, 50, 50} {};
@@ -25,6 +25,7 @@ public:
     float DistanceFromPlayer(const Player& player) const;
     void Attack(Player& player);
     void takeDamage(int damage);
+    bool IsDead() const {return isDead;}
     void Attack();
 private:
     void Move(const Player& player);
@@ -39,5 +40,4 @@ private:
     float timer = 0;
     static constexpr float chargeTime = 0.8f;
     static constexpr float AttackTime = 0.2f;
-
 };
